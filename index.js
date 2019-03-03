@@ -4,13 +4,12 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const app = new Koa();
 
-app.use(bodyParser());
+app.use(bodyParser({
+    enableTypes: ['text', 'form', 'json']
+}));
 
 app.use(async (ctx) => {
-    console.log(ctx.request)
-    const payload = ctx.request.rawBody.payload;
-    const body = JSON.parse(payload)
-    console.log(body)
+    const payload = JSON.parse(ctx.request.body.payload);
     const ref = payload.ref.split('/');
     const branch = ref.pop();
     const re = /[^\d-]/g;
@@ -21,7 +20,8 @@ app.use(async (ctx) => {
             if (re.test(branch)) {
                 throw new Error();
             }
-            result = await exec(`cd ../${branch} && cd hi git pull origin ${branch}`);
+            result = await exec(`pwd && cd ../${branch}/hi && git checkout ${branch} && git pull origin ${branch}`);
+            console.log(result)
         } catch (e) {
             result = e;
         }
@@ -31,5 +31,3 @@ app.use(async (ctx) => {
         ctx.throw(400);
     }
 });
-
-app.listen(5556);
