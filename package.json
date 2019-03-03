@@ -2,5 +2,8 @@
   "dependencies": {
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1"
+  },
+  "scripts": {
+    "install": "cp ci.service /etc/systemd/system/ci.service"
   }
 }

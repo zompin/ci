@@ -1,0 +1,9 @@
+[Unit]
+Description=hi.academy CI script
+
+[Service]
+Type=simple
+User=zompin
+Group=zompin
+
+ExecStart=/usr/bin/nodemon /home/hi/ci/index.js
