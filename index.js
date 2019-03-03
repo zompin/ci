@@ -10,13 +10,14 @@ app.use(async (ctx) => {
     const branch = ref.pop();
     const re = /[^\d-]/g;
     let result = '';
+    console.log(ctx.request.body)
 
     if (ctx.method === 'POST') {
         try {
             if (re.test(branch)) {
                 throw new Error();
             }
-            result = await exec(`cd ../${branch} && git checkout develop && cd hi git pull origin ${branch}`);
+            result = await exec(`cd ../${branch} && cd hi git pull origin ${branch}`);
         } catch (e) {
             result = e;
         }
