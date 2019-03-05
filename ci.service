@@ -5,5 +5,7 @@ Description=hi.academy CI script
 Type=simple
 User=zompin
 Group=zompin
+ExecStart=/usr/bin/node /home/hi/sites/ci/index.js
 
-ExecStart=/usr/bin/nodemon /home/hi/ci/index.js
+[Install]
+WantedBy=multi-user.target

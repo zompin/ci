@@ -31,3 +31,5 @@ app.use(async (ctx) => {
         ctx.throw(400);
     }
 });
+
+app.listen(5556);
