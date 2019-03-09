@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const app = new Koa();
+const { writeFileSync } = require('fs');
 
 function getRep(ctx) {
     const payload = JSON.parse(ctx.request.body.payload);
@@ -32,6 +33,9 @@ app.use(async (ctx) => {
 
     if (ctx.method === 'POST' && name && branch) {
         result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch} && yarn prep`);
+        writeFileSync(`log-${name}-${branch}.log`, result.stdout);
+        writeFileSync(`error-${name}-${branch}.log`, result.stderr);
+
 
         ctx.body = result;
     } else {
