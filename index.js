@@ -29,12 +29,22 @@ app.use(async (ctx) => {
     } catch (e) {}
 
     const { name, branch } = rep;
-    let result = '';
+    let result = [];
 
-    if (ctx.method === 'POST' && name && branch) {
-        result = await exec(`pwd && cd ../${branch}/${name} || git checkout ${branch} || git pull origin ${branch} || yarn prep`);
-        writeFileSync(`log-${name}-${branch}.log`, result.stdout);
-        writeFileSync(`error-${name}-${branch}.log`, result.stderr);
+    if (1 || ctx.method === 'POST' && name && branch) {
+        const commands = [
+            'pwd',
+            `cd ../${branch}/${name}`,
+            `git checkout ${branch}`,
+            `git pull origin ${branch}`,
+            'yarn prep',
+        ];
+        commands.forEach(async c => {
+            const r = await exec(c);
+            writeFileSync(`log-${name}-${branch}.log`, result.stdout, { flag: 'a' });
+            writeFileSync(`error-${name}-${branch}.log`, result.stderr, { flag: 'a' });
+            result.push(r);
+        });
 
 
         ctx.body = result;
