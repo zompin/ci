@@ -34,8 +34,7 @@ app.use(async (ctx) => {
     if (ctx.method === 'POST' && name && branch) {
         const commands = [
             'pwd',
-            `cd ../${branch}/${name}`,
-            'pwd',
+            `cd ${branch}/${name}`,
             `git checkout ${branch}`,
             `git pull origin ${branch}`,
             'yarn prep',
