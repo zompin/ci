@@ -6,7 +6,7 @@ Type=simple
 User=zompin
 Group=zompin
 ExecStart=/usr/bin/node /home/hi/sites/ci/index.js
-WorkingDirectory=/home/hi/sites
+RootDirectory=/home/hi/sites
 
 [Install]
 WantedBy=multi-user.target
