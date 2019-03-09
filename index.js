@@ -35,6 +35,7 @@ app.use(async (ctx) => {
         const commands = [
             'pwd',
             `cd ../${branch}/${name}`,
+            'pwd',
             `git checkout ${branch}`,
             `git pull origin ${branch}`,
             'yarn prep',
