@@ -4,28 +4,34 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const app = new Koa();
 
+function getRep(ctx) {
+    const payload = JSON.parse(ctx.request.body.payload);
+    const ref = payload.ref.split('/');
+    const name = payload.repository.name;
+    const branch = ref.pop();
+
+    return {
+        name,
+        branch,
+    }
+}
+
 app.use(bodyParser({
     enableTypes: ['text', 'form', 'json']
 }));
 
 app.use(async (ctx) => {
-    const payload = JSON.parse(ctx.request.body.payload);
-    const ref = payload.ref.split('/');
-    const name = payload.repository.name;
-    const branch = ref.pop();
-    const re = /[^\d-]/g;
+    let rep = { name: '', branch : '' };
+
+    try {
+        rep = getRep(ctx);
+    } catch (e) {}
+
+    const { name, branch } = rep;
     let result = '';
 
-    if (ctx.method === 'POST') {
-        try {
-            if (re.test(branch)) {
-                throw new Error();
-            }
-            result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch}`);
-            console.log(result)
-        } catch (e) {
-            result = e;
-        }
+    if (ctx.method === 'POST' && name && branch) {
+        result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch}`);
 
         ctx.body = result;
     } else {
