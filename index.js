@@ -34,20 +34,35 @@ app.use(async (ctx) => {
     if (ctx.method === 'POST' && name && branch) {
         let tmp = await exec('pwd');
         result.push(tmp);
-        tmp = await exec(`cd ${branch}/${name}`);
+        try {
+            tmp = await exec(`cd ${branch}/${name}`);
+        } catch (e) {
+            tmp = e;
+        }
         result.push(tmp);
         tmp = await exec('pwd');
         result.push(tmp);
-        tmp = await exec(`git checkout ${branch}`);
+        try {
+            tmp = await exec(`git checkout ${branch}`);
+        } catch (e) {
+            tmp = e;
+        }
         result.push(tmp);
-        tmp = await exec(`git pull origin ${branch}`);
+        try {
+            tmp = await exec(`git pull origin ${branch}`);
+        } catch (e) {
+            tmp = e;
+        }
         result.push(tmp);
-        tmp = await exec('yarn prep');
+        try {
+            tmp = await exec('yarn prep');
+        } catch (e) {
+            tmp = e;
+        }
         result.push(tmp);
 
         result.forEach(r => {
-            writeFileSync(`log-${name}-${branch}.log`, r.stdout, { flag: 'a' });
-            writeFileSync(`error-${name}-${branch}.log`, r.stderr, { flag: 'a' });
+            writeFileSync(`log-${name}-${branch}.log`, JSON.stringify(r), { flag: 'a' });
         });
 
         ctx.body = result;
