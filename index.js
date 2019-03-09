@@ -31,7 +31,7 @@ app.use(async (ctx) => {
     let result = '';
 
     if (ctx.method === 'POST' && name && branch) {
-        result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch}`);
+        result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch} && yarn prep`);
 
         ctx.body = result;
     } else {

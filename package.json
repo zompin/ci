@@ -4,6 +4,6 @@
     "koa-bodyparser": "^4.2.1"
   },
   "scripts": {
-    "install": "cp ci.service /etc/systemd/system/ci.service"
+    "prep": "cp ci.service /etc/systemd/system/ci.service"
   }
 }
