@@ -32,7 +32,7 @@ app.use(async (ctx) => {
     let result = '';
 
     if (ctx.method === 'POST' && name && branch) {
-        result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch} && yarn prep`);
+        result = await exec(`pwd && cd ../${branch}/${name} || git checkout ${branch} || git pull origin ${branch} || yarn prep`);
         writeFileSync(`log-${name}-${branch}.log`, result.stdout);
         writeFileSync(`error-${name}-${branch}.log`, result.stderr);
 
