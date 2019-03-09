@@ -41,8 +41,8 @@ app.use(async (ctx) => {
         ];
         commands.forEach(async c => {
             const r = await exec(c);
-            writeFileSync(`log-${name}-${branch}.log`, result.stdout, { flag: 'a' });
-            writeFileSync(`error-${name}-${branch}.log`, result.stderr, { flag: 'a' });
+            writeFileSync(`log-${name}-${branch}.log`, r.stdout, { flag: 'a' });
+            writeFileSync(`error-${name}-${branch}.log`, r.stderr, { flag: 'a' });
             result.push(r);
         });
 
