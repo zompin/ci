@@ -11,6 +11,7 @@ app.use(bodyParser({
 app.use(async (ctx) => {
     const payload = JSON.parse(ctx.request.body.payload);
     const ref = payload.ref.split('/');
+    const name = payload.repository.name;
     const branch = ref.pop();
     const re = /[^\d-]/g;
     let result = '';
@@ -20,7 +21,7 @@ app.use(async (ctx) => {
             if (re.test(branch)) {
                 throw new Error();
             }
-            result = await exec(`pwd && cd ../${branch}/hi && git checkout ${branch} && git pull origin ${branch}`);
+            result = await exec(`pwd && cd ../${branch}/${name} && git checkout ${branch} && git pull origin ${branch}`);
             console.log(result)
         } catch (e) {
             result = e;
