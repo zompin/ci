@@ -31,7 +31,7 @@ app.use(async (ctx) => {
     const { name, branch } = rep;
     let result = [];
 
-    if (1 || ctx.method === 'POST' && name && branch) {
+    if (ctx.method === 'POST' && name && branch) {
         const commands = [
             'pwd',
             `cd ../${branch}/${name}`,
