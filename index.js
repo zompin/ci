@@ -1,7 +1,6 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const exec = require('child_process').execSync;
 const app = new Koa();
 const { writeFileSync } = require('fs');
 
@@ -32,34 +31,24 @@ app.use(async (ctx) => {
     let result = [];
 
     if (ctx.method === 'POST' && name && branch) {
-        let tmp = await exec('pwd');
-        result.push(tmp);
-        try {
-            tmp = await exec(`cd ${branch}/${name}`);
-        } catch (e) {
-            tmp = e;
-        }
-        result.push(tmp);
-        tmp = await exec('pwd');
-        result.push(tmp);
-        try {
-            tmp = await exec(`git checkout ${branch}`);
-        } catch (e) {
-            tmp = e;
-        }
-        result.push(tmp);
-        try {
-            tmp = await exec(`git pull origin ${branch}`);
-        } catch (e) {
-            tmp = e;
-        }
-        result.push(tmp);
-        try {
-            tmp = await exec('yarn prep');
-        } catch (e) {
-            tmp = e;
-        }
-        result.push(tmp);
+        const commands = [
+            'pwd',
+            `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git checkout .`,
+            `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git pull origin ${branch}`,
+            `yarn workspace ./${branch}/${name} prep`,
+        ];
+
+        commands.forEach((c) => {
+            let tmp = {};
+
+            try {
+                tmp = exec(c);
+            } catch (e) {
+                tmp = e;
+            }
+
+            result.push(tmp);
+        });
 
         result.forEach(r => {
             writeFileSync(`log-${name}-${branch}.log`, JSON.stringify(r), { flag: 'a' });
