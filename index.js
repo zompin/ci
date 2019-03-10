@@ -47,7 +47,7 @@ app.use(async (ctx) => {
                 tmp = e;
             }
 
-            result.push(tmp);
+            result.push(tmp.toString());
         });
 
         result.forEach(r => {
