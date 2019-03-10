@@ -60,4 +60,5 @@ app.use(async (ctx) => {
     }
 });
 
-app.listen(5556);
+const server = app.listen(5556);
+server.timeout = 300000;
