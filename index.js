@@ -35,7 +35,7 @@ app.use(async (ctx) => {
             'pwd',
             `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git checkout .`,
             `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git pull origin ${branch}`,
-            `yarn workspace ./${branch}/${name} prep`,
+            `yarn --cwd ./${branch}/${name} prep`,
         ];
 
         commands.forEach((c) => {
