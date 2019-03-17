@@ -1,8 +1,11 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const exec = require('child_process').execSync;
-const app = new Koa();
 const { writeFileSync } = require('fs');
+const { resolve } = require('path');
+const { EOL } = require('os');
+const serve = require('koa-static')(resolve(__dirname, 'public'));
+const app = new Koa();
 
 function getRep(ctx) {
     const payload = JSON.parse(ctx.request.body.payload);
@@ -16,11 +19,7 @@ function getRep(ctx) {
     }
 }
 
-app.use(bodyParser({
-    enableTypes: ['text', 'form', 'json']
-}));
-
-app.use(async (ctx) => {
+function post(ctx) {
     let rep = { name: '', branch : '' };
 
     try {
@@ -29,34 +28,56 @@ app.use(async (ctx) => {
 
     const { name, branch } = rep;
     let result = [];
+    const commands = [
+        'pwd',
+        `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git checkout .`,
+        `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git pull origin ${branch}`,
+        `yarn --cwd ./${branch}/${name} prep`,
+    ];
 
-    if (ctx.method === 'POST' && name && branch) {
-        const commands = [
-            'pwd',
-            `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git checkout .`,
-            `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git pull origin ${branch}`,
-            `yarn --cwd ./${branch}/${name} prep`,
-        ];
-
-        commands.forEach((c) => {
-            let tmp = {};
-
-            try {
-                tmp = exec(c);
-            } catch (e) {
-                tmp = e;
-            }
-
-            result.push(tmp.toString());
-        });
-
-        result.forEach(r => {
-            writeFileSync(`log-${name}-${branch}.log`, JSON.stringify(r), { flag: 'a' });
-        });
-
-        ctx.body = result;
-    } else {
+    if (!name || !branch) {
         ctx.throw(400);
+    }
+
+    commands.forEach((c) => {
+        let tmp = {};
+
+        try {
+            tmp = exec(c);
+        } catch (e) {
+            tmp = e;
+        }
+
+        result.push(tmp.toString());
+    });
+
+    result.forEach(r => {
+        writeFileSync(resolve(__dirname, 'public/ci.log'), `${JSON.stringify(r)}${EOL}`, { flag: 'a' });
+    });
+
+    ctx.body = result;
+}
+
+function get(ctx) {
+    ctx.throw(400);
+}
+
+app.use(bodyParser({
+    enableTypes: ['text', 'form', 'json']
+}));
+
+app.use(serve);
+
+app.use(async (ctx) => {
+    switch (ctx.method) {
+        case 'POST':
+            post(ctx);
+        break;
+        case 'GET':
+            get(ctx);
+        break;
+        default:
+            ctx.throw(400);
     }
 });
 
