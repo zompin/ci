@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
-import { Switch, Route, withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import getLogAction from '../actions/Log';
 
 class App extends Component {
+  componentDidMount() {
+    const { getLog } = this.props;
+
+    getLog();
+  }
+
   render() {
     return (
       <div>
-        <Switch>
-          <Route component={() => (<div>App</div>)} path="/" />
-        </Switch>
+          123123
       </div>
     );
   }
 }
 
-export default withRouter(hot(App));
+const mapStateToProps = state => ({
+  log: state.Log,
+});
+
+export default hot(connect(mapStateToProps, { getLog: getLogAction })(App));
