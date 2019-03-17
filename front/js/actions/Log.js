@@ -1,23 +1,24 @@
 import { ACTIONS } from "../utils/constants";
 
 const logFetch = () => ({
-    type: ACTIONS.LOG_FETCH,
+  type: ACTIONS.LOG_FETCH,
 });
 
 const logFetchError = error => ({
-    type: ACTIONS.LOG_FETCH_ERROR,
-    error,
+  type: ACTIONS.LOG_FETCH_ERROR,
+  error,
 });
 
 const logFetchSuccess = data => ({
-    type: ACTIONS.LOG_FETCH_SUCCESS,
-    data,
+  type: ACTIONS.LOG_FETCH_SUCCESS,
+  data,
 });
 
 export default () => (dispatch) => {
-    dispatch(logFetch());
+  dispatch(logFetch());
 
-    fetch('/log.log')
-        .then(data => dispatch(logFetchSuccess(data)))
-        .catch(error => dispatch(logFetchError(error)));
+  fetch('/log.log')
+    .then(data => data.text())
+    .then(data => dispatch(logFetchSuccess(data)))
+    .catch(error => dispatch(logFetchError(error)));
 };

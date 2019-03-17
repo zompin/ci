@@ -11,6 +11,10 @@ class App extends Component {
   }
 
   render() {
+    const { log } = this.props;
+
+    console.log(log)
+
     return (
       <div>
           123123
