@@ -13,11 +13,36 @@ class App extends Component {
   render() {
     const { log } = this.props;
 
-    console.log(log)
+    if (!log.loaded && !log.error) {
+      return (<div>Loading...</div>);
+    }
+
+    if (log.error) {
+      return (<div>Loading error</div>);
+    }
+
+    const parsedLog = log.data
+      .split('\n')
+      .map((l) => {
+        try {
+          return JSON.parse(l);
+        } catch (e) {
+          return l;
+        }
+      })
+      .filter(l => !!l);
 
     return (
       <div>
-          123123
+        {
+          parsedLog.map(l => (
+            <pre>{l}</pre>
+          ))
+        }
+        {
+          !parsedLog.length &&
+          <div>Nothing to show</div>
+        }
       </div>
     );
   }

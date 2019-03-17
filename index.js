@@ -16,6 +16,7 @@ function getRep(ctx) {
   return {
     name,
     branch,
+    payload,
   };
 }
 
@@ -26,7 +27,7 @@ function post(ctx) {
     rep = getRep(ctx);
   } catch (e) {}
 
-  const { name, branch } = rep;
+  const { name, branch, payload } = rep;
   const result = [];
   const commands = [
     'pwd',
@@ -35,7 +36,7 @@ function post(ctx) {
     `yarn --cwd ./${branch}/${name} prep`,
   ];
 
-  if (!name || !branch) {
+  if (!name || !branch || !payload) {
     ctx.throw(400);
   }
 
@@ -51,9 +52,10 @@ function post(ctx) {
     result.push(tmp.toString());
   });
 
-  result.forEach((r) => {
-    writeFileSync(resolve(__dirname, 'public/ci.log'), `${JSON.stringify(r)}\n`, { flag: 'a' });
-  });
+  writeFileSync(
+    resolve(__dirname, 'public/ci.log'),
+    `${JSON.stringify({ payload, result })}\n`, { flag: 'a' },
+  );
 
   ctx.body = result;
 }

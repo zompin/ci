@@ -17,8 +17,13 @@ const logFetchSuccess = data => ({
 export default () => (dispatch) => {
   dispatch(logFetch());
 
-  fetch('/log.log')
-    .then(data => data.text())
+  fetch('/ci.log')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.status.toString());
+      }
+      return response.text();
+    })
     .then(data => dispatch(logFetchSuccess(data)))
     .catch(error => dispatch(logFetchError(error)));
 };
