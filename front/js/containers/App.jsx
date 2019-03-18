@@ -21,6 +21,8 @@ class App extends Component {
       return (<div>Loading error</div>);
     }
 
+    // return 'sss'
+
     const parsedLog = log.data
       .split('\n')
       .map((l) => {
@@ -36,7 +38,7 @@ class App extends Component {
       <div>
         {
           parsedLog.map(l => (
-            <pre>{l}</pre>
+            <pre>{JSON.stringify(l, null, '\t')}</pre>
           ))
         }
         {

@@ -67,6 +67,9 @@ module.exports = (_, { mode }) => {
       port: 3000,
       hot: true,
       open: true,
+      proxy: {
+        '/ci.log': 'http://hi.academy:5555',
+      },
     },
 
     devtool: isDevelopment ? 'inline-cheap-module-source-map' : false,
