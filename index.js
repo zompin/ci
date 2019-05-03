@@ -29,12 +29,21 @@ function post(ctx) {
 
   const { name, branch, payload } = rep;
   const result = [];
-  const commands = [
-    'pwd',
+  let commands = [
     `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git checkout .`,
     `git --work-tree=./${branch}/${name} --git-dir=./${branch}/${name}/.git pull origin ${branch}`,
     `yarn --cwd ./${branch}/${name} prep`,
   ];
+
+  try {
+    const tmp = require('./commands');
+
+    if (tmp[name] && tmp[name][branch]) {
+      commands = [...commands, ...tmp[name][branch]];
+    }
+  } catch (e) {
+    console.warn('"commands.json" not found')
+  }
 
   if (!name || !branch || !payload) {
     ctx.throw(400);
