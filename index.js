@@ -4,6 +4,10 @@ const exec = require('child_process').execSync;
 const { writeFileSync } = require('fs');
 const { resolve } = require('path');
 const serve = require('koa-static')(resolve(__dirname, 'public'));
+const config = require('config');
+
+const port = config.get('port');
+const timeout = config.get('timeout');
 
 const app = new Koa();
 
@@ -92,5 +96,5 @@ app.use(async (ctx) => {
   }
 });
 
-const server = app.listen(5556);
-server.timeout = 300000;
+const server = app.listen(port);
+server.timeout = timeout;
