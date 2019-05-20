@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import getLogAction from '../actions/Log';
+import { Event } from '../components';
 
 class App extends Component {
   componentDidMount() {
@@ -21,8 +22,6 @@ class App extends Component {
       return (<div>Loading error</div>);
     }
 
-    // return 'sss'
-
     const parsedLog = log.data
       .split('\n')
       .map((l) => {
@@ -38,7 +37,7 @@ class App extends Component {
       <div>
         {
           parsedLog.map(l => (
-            <pre>{JSON.stringify(l, null, '\t')}</pre>
+            <Event data={l} />
           ))
         }
         {
