@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import getLogAction from '../actions/Log';
@@ -15,11 +16,15 @@ class App extends Component {
     const { log } = this.props;
 
     if (!log.loaded && !log.error) {
-      return (<div>Loading...</div>);
+      return (
+        <div>Loading...</div>
+      );
     }
 
     if (log.error) {
-      return (<div>Loading error</div>);
+      return (
+        <div>Loading error</div>
+      );
     }
 
     const parsedLog = log.data
@@ -41,13 +46,19 @@ class App extends Component {
           ))
         }
         {
-          !parsedLog.length &&
-          <div>Nothing to show</div>
+          !parsedLog.length && (
+            <div>Nothing to show</div>
+          )
         }
       </div>
     );
   }
 }
+
+App.propTypes = {
+  getLog: PropTypes.func.isRequired,
+  log: PropTypes.shape().isRequired,
+};
 
 const mapStateToProps = state => ({
   log: state.Log,

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import './Event.less';
 
 const Event = ({ data }) => {
@@ -28,6 +29,10 @@ const Event = ({ data }) => {
       </div>
     </div>
   );
+};
+
+Event.propTypes = {
+  data: PropTypes.string.isRequired,
 };
 
 export default Event;
