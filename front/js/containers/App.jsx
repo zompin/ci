@@ -3,17 +3,48 @@ import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import getLogAction from '../actions/Log';
-import { Event } from '../components';
+import { Event, Tabs } from '../components';
 
 class App extends Component {
+  static addRepos(events) {
+    const store = {};
+
+    events.forEach((e) => {
+      const { name } = e.payload.repository;
+      const ref = e.payload.ref.split('/');
+      const branch = ref.pop();
+
+      if (name in store) {
+        store[name][branch] = {};
+      } else {
+        store[name] = {
+          [branch]: {},
+        };
+      }
+    });
+
+    return Object.keys(store).map(k => ({ name: k, id: k, branches: store[k] }));
+  }
+
+  state = {
+    currentTab: null,
+  };
+
   componentDidMount() {
     const { getLog } = this.props;
 
     getLog();
   }
 
+  onTabChange = (currentTab) => {
+    this.setState({
+      currentTab,
+    });
+  };
+
   render() {
     const { log } = this.props;
+    const { currentTab } = this.state;
 
     if (!log.loaded && !log.error) {
       return (
@@ -38,15 +69,26 @@ class App extends Component {
       })
       .filter(l => !!l);
 
+    const repos = App.addRepos(parsedLog);
+    const filteredLog = currentTab
+      ? parsedLog.filter(l => l.payload.repository.name === currentTab.id)
+      : parsedLog;
+
     return (
       <div>
+        <Tabs
+          tabs={repos}
+          defaultTab={repos[0]}
+          onChange={this.onTabChange}
+          currentTab={currentTab}
+        />
         {
-          parsedLog.map(l => (
+          filteredLog.map(l => (
             <Event data={l} />
           ))
         }
         {
-          !parsedLog.length && (
+          !filteredLog.length && (
             <div>Nothing to show</div>
           )
         }
