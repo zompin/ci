@@ -4,15 +4,17 @@ import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import getLogAction from '../actions/Log';
 import { Event, Tabs } from '../components';
+import getBranchName from '../utils/getBranchName';
 
 class App extends Component {
   static addRepos(events) {
-    const store = {};
+    const store = {
+
+    };
 
     events.forEach((e) => {
       const { name } = e.payload.repository;
-      const ref = e.payload.ref.split('/');
-      const branch = ref.pop();
+      const branch = getBranchName(e);
 
       if (name in store) {
         store[name][branch] = {};

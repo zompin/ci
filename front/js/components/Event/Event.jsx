@@ -1,31 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Hider } from '../index';
+import getBranchName from '../../utils/getBranchName';
+import getUser from '../../utils/getUser';
 import './Event.less';
 
 const Event = ({ data }) => {
   const [show, toggle] = useState(false);
-  const [height, setHeight] = useState(0);
-  const inner = useRef(null);
+  const branch = getBranchName(data);
+  const user = getUser(data);
 
   const toggleEvent = () => {
-    const { clientHeight } = inner.current;
-
     toggle(!show);
-
-    if (show) {
-      setHeight(0);
-    } else {
-      setHeight(clientHeight);
-    }
   };
 
   return (
     <div className="event">
-      <div className="event__title" onClick={toggleEvent}>Push</div>
-      <div className="event__content" style={{ maxHeight: height }}>
-        <div className="event__inner" ref={inner}>
+      <div className="event__title" onClick={toggleEvent}>
+        <div className="event__repository">{data.payload.repository.name}</div>
+        <div className="event__branch">{`branch: ${branch}`}</div>
+        <div className="event__user">{`user: ${user}`}</div>
+      </div>
+      <div className="event__content">
+        <Hider isShow={show}>
           <pre>{JSON.stringify(data, null, '\t')}</pre>
-        </div>
+        </Hider>
       </div>
     </div>
   );
