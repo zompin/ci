@@ -8,9 +8,7 @@ import getBranchName from '../utils/getBranchName';
 
 class App extends Component {
   static addRepos(events) {
-    const store = {
-
-    };
+    const store = {};
 
     events.forEach((e) => {
       const { name } = e.payload.repository;

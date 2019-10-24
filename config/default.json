@@ -1,4 +1,9 @@
 {
   "port": 5556,
-  "timeout": 300000
+  "timeout": 300000,
+  "db": {
+    "host": "localhost",
+    "port": 27015,
+    "name": "rokot"
+  }
 }
