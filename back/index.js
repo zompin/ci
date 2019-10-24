@@ -51,7 +51,10 @@ function post(ctx) {
   ctx.body = result;
 }
 
-app.use(koaBody({}));
+app.use(koaBody({
+  multipart: true,
+  urlencoded: true,
+}));
 
 app.use(serve);
 app.use(webhook);
