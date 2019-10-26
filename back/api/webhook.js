@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const path = require('path');
 const fs = require('fs');
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 const { promisify } = require('util');
 const mock = require('./mock');
 
@@ -34,13 +34,12 @@ async function hook(payload) {
 
   // TODO проверять deployKey
   if (!fs.existsSync(thread)) {
-    await execAsync(`touch tmp-${Math.random()}`);
-    console.error(await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`));
-    console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
+    console.error(execSync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`));
+    console.error(execSync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
   } else {
-    console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`));
-    console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
-    console.error(await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`));
+    console.error(execSync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`));
+    console.error(execSync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
+    console.error(execSync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`));
   }
 }
 
