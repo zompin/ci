@@ -8,7 +8,6 @@ const mock = require('./mock');
 const execAsync = promisify(exec);
 const router = new Router();
 const sandbox = 'sandbox';
-const deployKeyDir = path.join(process.cwd(), 'keys', 'deploy');
 
 function getRep(payload) {
   const ref = payload.ref.split('/');
@@ -25,19 +24,22 @@ async function hook(payload) {
   const workDir = path.join(process.cwd(), sandbox);
   const { name, branch } = getRep(payload);
   const thread = path.join(workDir, branch, name);
+  const deployKeyDir = path.join(process.cwd(), 'keys', 'deploy');
 
   if (!fs.existsSync(workDir)) {
     fs.mkdirSync(workDir, { recursive: true });
   }
 
+  console.error(workDir)
+
   // TODO проверять deployKey
   if (!fs.existsSync(thread)) {
-    await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`);
-    await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`);
+    console.error(await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`));
+    console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
   } else {
-    await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`);
-    await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`);
-    await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`);
+    console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`));
+    console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
+    console.error(await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`));
   }
 }
 
