@@ -43,7 +43,7 @@ async function hook(payload) {
 
 router.post('/api/v1/webhook', async (ctx) => {
   ctx.body = 'ok';
-  hook(JSON.parse(ctx.request.body.payload));
+  hook(ctx.request.body.payload);
 });
 
 router.get('/api/v1/webhook', async (ctx) => {
