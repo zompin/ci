@@ -25,22 +25,29 @@ async function hook(payload) {
   const { name, branch } = getRep(payload);
   const thread = path.join(workDir, branch, name);
   const deployKeyDir = path.join(process.cwd(), 'keys', 'deploy');
+  const commands = [];
 
   if (!fs.existsSync(workDir)) {
     fs.mkdirSync(workDir, { recursive: true });
   }
 
-  console.error(workDir)
-
   // TODO проверять deployKey
   if (!fs.existsSync(thread)) {
-    console.error(execSync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`));
-    console.error(execSync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
+    commands.push(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`);
+    commands.push(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`);
   } else {
-    console.error(execSync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`));
-    console.error(execSync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
-    console.error(execSync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`));
+    commands.push(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`);
+    commands.push(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`);
+    commands.push(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`);
   }
+
+  console.error('-----');
+  console.error(commands);
+  console.error('-----');
+
+  commands.forEach((c) => {
+    execSync(c);
+  });
 }
 
 router.post('/api/v1/webhook', async (ctx) => {
