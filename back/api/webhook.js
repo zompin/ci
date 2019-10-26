@@ -32,12 +32,12 @@ async function hook(payload) {
 
   // TODO проверять deployKey
   if (!fs.existsSync(thread)) {
-    await execAsync(`ssh-agent sh -c '${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`);
+    await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`);
     await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`);
   } else {
     await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} reset --hard`);
     await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`);
-    await execAsync(`ssh-agent sh -c '${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`);
+    await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} pull'`);
   }
 }
 
