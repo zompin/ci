@@ -51,7 +51,7 @@
   "scripts": {
     "prep": "cp ci.service /etc/systemd/system/ci.service",
     "dev:front": "npx webpack-dev-server --mode development",
-    "dev:back": "nodemon back/index.js",
+    "dev:server": "nodemon back/index.js",
     "dev": "concurrently \"yarn dev:front\" && \"yarn dev:server\"",
     "build": "npx webpack --mode production"
   },
