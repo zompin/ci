@@ -34,6 +34,7 @@ async function hook(payload) {
 
   // TODO проверять deployKey
   if (!fs.existsSync(thread)) {
+    await execAsync(`touch tmp-${Math.random()}`);
     console.error(await execAsync(`ssh-agent sh -c 'ssh-add ${deployKeyDir}; git clone ${payload.repository.ssh_url} ${thread}'`));
     console.error(await execAsync(`git --work-tree=${thread} --git-dir=${path.join(thread, '.git')} checkout ${branch}`));
   } else {
