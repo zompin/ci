@@ -1,6 +1,0 @@
-{
-  "repo-name": {
-    "develop": ["systemctl restart nginx"],
-    "master": ["echo \"\git push""]
-  }
-}

@@ -3,4 +3,4 @@ node_modules
 public
 commands.json
 commands
-sandbox
+workdir
